@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Employee Chatbot</title>
+
+<style>
+body{
+    margin:0;
+    font-family: Arial;
+    background:#0f172a;
+    color:white;
+}
+
+.chat-container{
+    max-width:900px;
+    margin:auto;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+}
+
+.header{
+    padding:15px;
+    background:#020617;
+    text-align:center;
+    font-size:20px;
+    border-bottom:1px solid #334155;
+}
+
+.messages{
+    flex:1;
+    padding:20px;
+    overflow-y:auto;
+}
+
+.user{
+    text-align:right;
+    margin:10px;
+}
+
+.bot{
+    text-align:left;
+    margin:10px;
+}
+
+.bubble{
+    display:inline-block;
+    padding:12px 16px;
+    border-radius:10px;
+    max-width:70%;
+}
+
+.user .bubble{
+    background:#2563eb;
+}
+
+.bot .bubble{
+    background:#1e293b;
+}
+
+.input-area{
+    display:flex;
+    padding:15px;
+    border-top:1px solid #334155;
+    background:#020617;
+}
+
+input{
+    flex:1;
+    padding:10px;
+    border:none;
+    border-radius:5px;
+}
+
+button{
+    margin-left:10px;
+    padding:10px 20px;
+    border:none;
+    background:#22c55e;
+    color:black;
+    font-weight:bold;
+    border-radius:5px;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="chat-container">
+    <div class="header">🧠 Employee Database Chatbot</div>
+
+    <div class="messages" id="chat"></div>
+
+    <div class="input-area">
+        <input id="msg" placeholder="Ask about employees...">
+        <button onclick="send()">Send</button>
+    </div>
+</div>
+
+<script>
+async function send(){
+    let q = document.getElementById("msg").value;
+    if(!q) return;
+
+    let chat = document.getElementById("chat");
+
+    chat.innerHTML += `<div class='user'><div class='bubble'>${q}</div></div>`;
+    document.getElementById("msg").value="";
+
+    let res = await fetch("/ask",{
+        method:"POST",
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({query:q})
+    });
+
+    let data = await res.json();
+
+    chat.innerHTML += `<div class='bot'><div class='bubble'>${data.result.replace(/\n/g,"<br>")}</div></div>`;
+    chat.scrollTop = chat.scrollHeight;
+}
+</script>
+
+</body>
+</html>
