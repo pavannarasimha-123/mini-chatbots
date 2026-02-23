@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sklassics Technologies</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --brand:#25d366;--bg-grad-a:#ff7e5f;--bg-grad-b:#feb47b;--card-bg:rgba(255,255,255,.9);
+  --text-dark:#2f2f2f;--muted:#6b7280;--border:#e5e7eb
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:'Roboto',system-ui,-apple-system,Segoe UI,Helvetica,Arial;color:var(--text-dark);
+  background:linear-gradient(135deg,var(--bg-grad-a),var(--bg-grad-b))}
+.app-shell{min-height:100vh;display:grid;grid-template-rows:auto 1fr auto}
+
+/* Header */
+.header{backdrop-filter:blur(6px);background:rgba(255,255,255,.35);border-bottom:1px solid rgba(0,0,0,.05);
+  padding:16px 24px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;gap:12px;align-items:center;font-weight:700;letter-spacing:.8px}
+.brand img{width:36px;height:36px}
+.header .actions{display:flex;gap:10px;align-items:center}
+.btn{appearance:none;border:none;border-radius:10px;padding:10px 14px;background:#fff;color:var(--text-dark);
+  cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.btn.primary{background:var(--brand);color:#fff}
+.btn.danger{background:#ef4444;color:#fff}
+.btn:hover{filter:brightness(.96)}
+.memory-pill{background:rgba(255,255,255,.25);border:1px solid rgba(255,255,255,.35);padding:6px 10px;border-radius:999px;font-size:12px}
+
+/* Main */
+.main{display:grid;place-items:center;padding:24px}
+.hero{width:min(1100px,94vw);background:var(--card-bg);border:1px solid rgba(0,0,0,.06);
+  border-radius:18px;padding:28px;box-shadow:0 10px 30px rgba(0,0,0,.08)}
+.hero-top{display:grid;grid-template-columns:1fr 180px;align-items:center;gap:20px}
+.hero h1{margin:0 0 6px;font-size:clamp(22px,3.2vw,34px);letter-spacing:1px}
+.hero p{margin:0;color:var(--muted)}
+.hero-top img{width:120px;height:120px;object-fit:contain}
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+.feature{background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px;font-size:14px}
+.feature b{display:block;margin-bottom:6px}
+
+/* Footer */
+.footer{padding:14px 24px;color:#ffffffcc;font-size:13px;text-align:center}
+
+/* Floating chat button */
+.chat-fab{position:fixed;right:22px;bottom:22px;width:62px;height:62px;border-radius:50%;
+  background:var(--brand);color:#fff;display:grid;place-items:center;cursor:pointer;
+  box-shadow:0 16px 30px rgba(0,0,0,.2);border:none;z-index:9998}
+.chat-fab:hover{filter:brightness(.95)}
+.chat-fab .badge{position:absolute;top:-6px;right:-6px;background:#ef4444;color:#fff;font-size:11px;padding:3px 7px;border-radius:100px}
+
+/* Chat window */
+.chat-window{position:fixed;right:22px;bottom:92px;width:min(380px,92vw);height:520px;background:#f0f2f5;border-radius:18px;
+  box-shadow:0 16px 40px rgba(0,0,0,.25);display:none;grid-template-rows:auto 1fr auto;overflow:hidden;
+  border:1px solid rgba(0,0,0,.07);z-index:9999}
+.chat-window.open{display:grid}
+.chat-header{background:#075e54;color:#fff;padding:10px 12px;display:flex;align-items:center;gap:10px}
+.chat-header img{width:32px;height:32px;border-radius:50%}
+.chat-header .title{font-weight:600}
+.chat-header .sub{font-size:12px;opacity:.8}
+.chat-header .spacer{flex:1}
+.chat-header .x{background:transparent;color:#fff;border:none;font-size:18px;cursor:pointer;padding:6px 8px;border-radius:8px}
+.chat-header .x:hover{background:rgba(255,255,255,.13)}
+
+/* Messages */
+.messages{overflow-y:auto;padding:14px 12px 10px;background-image:url('https://i.imgur.com/j4wByjl.png');background-size:300px}
+.row{display:flex;margin:6px 0}
+.msg{max-width:78%;padding:8px 10px;border-radius:10px;position:relative;font-size:14px;white-space:pre-wrap;word-break:break-word;box-shadow:0 1px 1px rgba(0,0,0,.05)}
+.msg .time{display:inline-block;margin-left:8px;font-size:11px;color:#667781}
+.bot{justify-content:flex-start}
+.user{justify-content:flex-end}
+.msg.bot{background:#fff;border-top-left-radius:2px}
+.msg.user{background:#dcf8c6;border-top-right-radius:2px}
+
+/* Typing dots */
+.typing{display:inline-flex;align-items:center;gap:3px}
+.dot{width:6px;height:6px;background:#aebac1;border-radius:50%;animation:bounce 1.3s infinite}
+.dot:nth-child(2){animation-delay:.15s}
+.dot:nth-child(3){animation-delay:.3s}
+@keyframes bounce{0%,80%,100%{transform:translateY(0);opacity:.6}40%{transform:translateY(-4px);opacity:1}}
+
+/* Input */
+.input{background:#fff;border-top:1px solid var(--border);padding:10px;display:grid;grid-template-columns:1fr auto;gap:8px}
+.input textarea{resize:none;border:1px solid var(--border);border-radius:12px;padding:10px 12px;font-size:14px;max-height:140px;outline:none}
+.input button{border:none;background:var(--brand);color:#fff;border-radius:12px;padding:0 16px;font-weight:600;cursor:pointer}
+.input button:disabled{opacity:.6;cursor:not-allowed}
+
+/* Responsive */
+@media (max-width:840px){
+  .features{grid-template-columns:1fr}
+  .hero-top{grid-template-columns:1fr;text-align:center}
+  .hero-top img{margin:10px auto 0}
+}
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="header">
+    <div class="brand">
+      <img src="https://static.vecteezy.com/system/resources/thumbnails/029/572/153/small/cute-robot-character-ai-generative-free-png.png" alt="Bot"/>
+      <div>Sklassics Technologies Private Limited 
+      </div>
+    </div>
+    <div class="actions">
+      <span class="memory-pill" id="identityPill" title="Current user identity">🙂 Guest</span>
+      <button class="btn" id="clearBtn" type="button">Clear Chat</button>
+      <button class="btn primary" id="openFromHeader" type="button">Chat with us</button>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="hero">
+      <div class="hero-top">
+        <div>
+          <h1>Smart Answers with Chat History</h1>
+          <p>The bot keeps per-user chat history on the server and answers with RAG over your PDFs.</p>
+        </div>
+        <img src="https://static.vecteezy.com/system/resources/thumbnails/029/572/153/small/cute-robot-character-ai-generative-free-png.png" alt="Mascot"/>
+      </div>
+      <div class="features">
+        <div class="feature"><b>WhatsApp-style chat</b> Familiar bubbles with timestamps and smooth autoscroll.</div>
+        <div class="feature"><b>Typing indicator</b> Animated dots while the bot prepares your answer.</div>
+        <div class="feature"><b>Server chat history</b> Messages persist per user (via <code>userId</code>).</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">© <span id="year"></span> Sklassics AI Assistant</footer>
+</div>
+
+<!-- Floating chat button -->
+<button class="chat-fab" id="chatFab" type="button" aria-label="Open chat">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M20 2H4a2 2 0 0 0-2 2v15.586A1 1 0 0 0 3.707 20L7 16h13a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/>
+  </svg>
+  <span class="badge" id="newBadge">New</span>
+</button>
+
+<!-- Chat window -->
+<aside class="chat-window" id="chatWin" role="dialog" aria-label="Chat window">
+  <div class="chat-header">
+    <img src="https://static.vecteezy.com/system/resources/thumbnails/029/572/153/small/cute-robot-character-ai-generative-free-png.png" alt=""/>
+    <div>
+      <div class="title">Sklassics Bot</div>
+      <div class="sub" id="presence">online</div>
+    </div>
+    <div class="spacer"></div>
+    <button class="x" id="closeChat" type="button" aria-label="Close chat">✕</button>
+  </div>
+
+  <div class="messages" id="messages" aria-live="polite"></div>
+
+  <div class="input">
+    <textarea id="input" rows="1" placeholder="Type a message"></textarea>
+    <button id="sendBtn" type="button" disabled>Send</button>
+  </div>
+</aside>
+
+<script>
+/* ---------------- Config ---------------- */
+/* Same-origin (recommended): keep relative paths. If you host the HTML elsewhere,
+   set these to your Flask URL, e.g. "http://localhost:8040/ask" and enable CORS. */
+const ASK_ENDPOINT = "http://127.0.0.1:8089/ask";
+const RESET_ENDPOINT = "http://127.0.0.1:8089/reset";
+
+/* ---------------- Utilities ---------------- */
+const $ = (s) => document.querySelector(s);
+const nowTime = () => { const d = new Date(); const h = String(d.getHours()).padStart(2,'0'); const m = String(d.getMinutes()).padStart(2,'0'); return `${h}:${m}`; };
+const uuidv4 = () => ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16));
+
+/* Identity for per-user chat history */
+let userId = localStorage.getItem("qf_userId");
+if (!userId) { userId = uuidv4(); localStorage.setItem("qf_userId", userId); }
+
+/* ---------------- Elements ---------------- */
+const yearEl = $('#year');
+const chatFab = $('#chatFab');
+const newBadge = $('#newBadge');
+const chatWin = $('#chatWin');
+const presence = $('#presence');
+const closeChat = $('#closeChat');
+const messagesEl = $('#messages');
+const inputEl = $('#input');
+const sendBtn = $('#sendBtn');
+const openFromHeader = $('#openFromHeader');
+const clearBtn = $('#clearBtn');
+const identityPill = $('#identityPill');
+
+yearEl.textContent = new Date().getFullYear();
+identityPill.textContent = `🆔 ${userId.slice(0,8)}…`;
+
+/* ---------------- State ---------------- */
+let greeted = false;
+let typingRow = null;
+
+/* ---------------- Chat open/close ---------------- */
+function openChat() {
+  chatWin.classList.add('open');
+  newBadge.style.display = 'none';
+  inputEl.focus();
+  if (!greeted) {
+    greeted = true;
+    pushBot("Hi! I’m Sklassics Assistant 🤖\n\nI keep chat history per user. Ask anything!");
+  }
+}
+function closeChatWin() { chatWin.classList.remove('open'); }
+
+document.addEventListener('DOMContentLoaded', () => {
+  chatFab.addEventListener('click', openChat);
+  openFromHeader.addEventListener('click', openChat);
+  closeChat.addEventListener('click', closeChatWin);
+  clearBtn.addEventListener('click', clearChat);
+});
+
+/* ---------------- Messaging helpers ---------------- */
+function scrollToBottom(){ messagesEl.scrollTo({ top: messagesEl.scrollHeight + 1000, behavior: 'smooth' }); }
+function bubble(role, content, isTyping=false){
+  const row = document.createElement('div'); row.className = `row ${role}`;
+  const msg = document.createElement('div'); msg.className = `msg ${role}`;
+  if (isTyping) {
+    msg.innerHTML = `<span class="typing" aria-label="Bot is typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span><span class="time">${nowTime()}</span>`;
+  } else {
+    msg.textContent = content;
+    const t = document.createElement('span'); t.className='time'; t.textContent = ' '+nowTime();
+    msg.appendChild(t);
+  }
+  row.appendChild(msg); messagesEl.appendChild(row); scrollToBottom(); return row;
+}
+function pushUser(text){ bubble('user', text); }
+function pushBot(text){ bubble('bot', text); }
+function showTyping(){ presence.textContent='typing…'; typingRow = bubble('bot','',true); }
+function hideTyping(){ presence.textContent='online'; if(typingRow){ typingRow.remove(); typingRow=null; } }
+
+/* ---------------- Clear chat (server history) ---------------- */
+async function clearChat(){
+  pushBot("Clearing chat history for you…");
+  try{
+    await fetch(RESET_ENDPOINT, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ userId })
+    });
+    messagesEl.innerHTML = '';
+    pushBot("Done. I cleared your server-side chat history.");
+  }catch(e){
+    pushBot("Sorry, I couldn’t clear history. Check server logs.");
+  }
+}
+
+/* ---------------- Send flow ---------------- */
+async function sendMessage(){
+  const clean = inputEl.value.trim(); if (!clean) return;
+  inputEl.value=''; inputEl.dispatchEvent(new Event('input'));
+  pushUser(clean); showTyping();
+
+  try{
+    const res = await fetch(ASK_ENDPOINT, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ query: clean, userId })
+    });
+    const data = await res.json();
+    const text = res.ok ? (data?.result || '') : `Oops, error: ${data?.error || 'Unknown error'}`;
+    hideTyping();
+    // server returns <br>-joined lines; convert to \n
+    setTimeout(() => pushBot(text.replace(/<br\s*\/?>/gi, '\n')), 120);
+  }catch(err){
+    hideTyping();
+    pushBot(`Network error: ${err?.message || 'Please try again.'}\n\nTip: If you opened this file via file://, either serve it from Flask or enable CORS on the API.`);
+  }
+}
+
+/* ---------------- Input UX ---------------- */
+inputEl.addEventListener('input', () => {
+  sendBtn.disabled = !inputEl.value.trim();
+  inputEl.style.height='auto';
+  inputEl.style.height=Math.min(inputEl.scrollHeight,140)+'px';
+});
+inputEl.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+});
+sendBtn.addEventListener('click', sendMessage);
+</script>
+</body>
+</html>
