@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>College Chatbot</title>
+
+<style>
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: #f2f4f8;
+}
+
+.container {
+    max-width: 900px;
+    margin: 30px auto;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,.1);
+    display: flex;
+    flex-direction: column;
+    height: 90vh;
+}
+
+.header {
+    padding: 15px;
+    background: #2563eb;
+    color: white;
+    text-align: center;
+    font-size: 22px;
+    border-radius: 10px 10px 0 0;
+}
+
+.chat-box {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.message {
+    margin: 10px 0;
+}
+
+.user {
+    text-align: right;
+}
+
+.user span {
+    background: #2563eb;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.bot span {
+    background: #e5e7eb;
+    padding: 8px 12px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.input-area {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+}
+
+input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+button {
+    margin-left: 10px;
+    padding: 10px 20px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #1e40af;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+    <div class="header">College PDF Chatbot</div>
+
+    <div class="chat-box" id="chat"></div>
+
+    <div class="input-area">
+        <input id="msg" placeholder="Ask your question..." onkeydown="if(event.key==='Enter') send()">
+        <button onclick="send()">Send</button>
+    </div>
+</div>
+
+<script>
+function send() {
+    let msg = document.getElementById("msg").value;
+    if(msg.trim()==="") return;
+
+    let chat = document.getElementById("chat");
+
+    chat.innerHTML += `<div class="message user"><span>${msg}</span></div>`;
+    document.getElementById("msg").value = "";
+
+    fetch("/chat", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({message: msg})
+    })
+    .then(res => res.json())
+    .then(data => {
+        chat.innerHTML += `<div class="message bot"><span>${data.reply}</span></div>`;
+        chat.scrollTop = chat.scrollHeight;
+    });
+}
+</script>
+
+</body>
+</html>
